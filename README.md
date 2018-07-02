@@ -10,7 +10,6 @@ Bee is a QA/Debug tool that works like a widget in any application. The idea is 
 - Configure the application on the fly
 - Add button, spinner and checkbox options regarding to your needs
 - Show the predefined information such as version number, android version, package name. Add some other custom information such as current end point
-- Show some usefull information to remind the user such as username, passwords for test
 - Show the log for the important events, ie: An event is triggered and you want to see whether it is triggered or not
 
 #### What Bee is not?
@@ -18,19 +17,21 @@ Bee is a QA/Debug tool that works like a widget in any application. The idea is 
 - Bee is not for the release apk
 
 <img src='https://github.com/nr4bt/bee/blob/master/images/bee0.png' width='140' height='200'></img>
-<img src='https://github.com/nr4bt/bee/blob/master/images/bee3.png' width='140' height='200'></img>
-<img src='https://github.com/nr4bt/bee/blob/master/images/bee1.png' width='140' height='200'></img>
-<img src='https://github.com/nr4bt/bee/blob/master/images/bee2.png' width='140' height='200'></img>
-<img src='https://github.com/nr4bt/bee/blob/master/images/bee4.png' width='140' height='200'></img>
+<img src='https://github.com/nr4bt/bee/blob/master/images/bee_settings.png' width='140' height='200'></img>
+<img src='https://github.com/nr4bt/bee/blob/master/images/bee_info.png' width='140' height='200'></img>
+<img src='https://github.com/nr4bt/bee/blob/master/images/bee_log.png' width='140' height='200'></img>
 
-#### Gradle
+#### Dependency
 
+https://jitpack.io/#orhanobut/bee/1.5
 ```groovy
 repositories {
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
+  // ...
+  maven { url "https://jitpack.io" }
 }
+
 dependencies {
-    compile 'com.orhanobut:bee:1.1-SNAPSHOT@aar'
+  compile 'com.github.orhanobut:bee:1.5'
 }
 ```
 
@@ -39,67 +40,46 @@ Extend BeeConfig class and add the functionalities as you needed.
 ```java
 public class SampleBeeConfig extends BeeConfig {
 
-    /**
-     * Add extra information by using content object.
-     */
-    @Override
-    public void onInfoContentCreated(Map<String, String> content) {
-        content.put("Current End Point", "http://www.google.com");
-    }
+  /**
+  * Add extra information by using content object.
+  */
+  @Override public void onInfoContentCreated(Map<String, String> content) {
+    content.put("Current End Point", "http://www.google.com");
+  }
 
-    /**
-     * Add information to the clipboard by using content object.
-     */
-    @Override
-    public void onClipboardContentCreated(Map<String, String> content) {
-        content.put("User1", "324234234");
-        content.put("Visa Expire Date", "2/16");
-        content.put("Visa Code", "34");
-    }
-
-    /**
-     * It is called when the save button is pressed
-     */
-    @Override
-    public void onSave() {
-        super.onSave();
-    }
-
-    /**
-     * It is called when the close button is pressed 
-     */
-    @Override
-    public void onClose() {
-        super.onClose();
-    }
+  /**
+  * It is called when the close button is pressed 
+  */
+  @Override public void onClose() {
+    super.onClose();
+  }
     
-    /**
-     * A sample button implementation
-     */
-    @Title("Reset")
-    @Button
-    public void onResetClicked() {
-        Log.d(TAG, "onResetClicked");
-    }
+  /**
+  * A sample button implementation
+  */
+  @Title("Reset")
+  @Button
+  public void onResetClicked() {
+    Log.d(TAG, "onResetClicked");
+  }
     
-    /**
-     * A sample checkbox implementation
-     */
-    @Title("Show splash screen")
-    @CheckBox
-    public void onShowSplashChecked(boolean isChecked) {
-        Log.d(TAG, "onShowSplashChecked");
-    }
+  /**
+  * A sample checkbox implementation
+  */
+  @Title("Show splash screen")
+  @CheckBox
+  public void onShowSplashChecked(boolean isChecked) {
+    Log.d(TAG, "onShowSplashChecked");
+  }
 
-    /**
-     * A sample spinner implementation
-     */
-    @Title("End Point")
-    @Spinner({"Staging", "Live", "Mock"})
-    public void onEndPointSelected(String selectedValue) {
-        Log.d(TAG, "onEndPointSelected");
-    }
-
+  /**
+  * A sample spinner implementation
+  */
+  @Title("End Point")
+  @Spinner({"Staging", "Live", "Mock"})
+  public void onEndPointSelected(String selectedValue) {
+    Log.d(TAG, "onEndPointSelected");
+  }
 }
 ```
 
@@ -107,11 +87,14 @@ public class SampleBeeConfig extends BeeConfig {
 In order to activate Bee, you need to pass activity as context. You can either initialize it in base activity and show in all activities or you can just initialize it in specific activities. 
 
 ```java
-@Override
-protected void onCreate(Bundle savedInstanceState) {
+@Override protected void onCreate(Bundle savedInstanceState) {
     ...
 
-    Bee.inject(this, SampleBeeConfig.class);
+  Bee.init(this)
+    .setBeeSize(100)                 //optional bee button size
+    .setBeePosition(Gravity.CENTER)  //optional bee button position
+    .setBeeMargin(0, 0, 0, 400)      //optional margin for the bee button
+    .inject(SampleBeeConfig.class);  //required
 }
 ```
 
@@ -168,12 +151,6 @@ BeeLog.d(TAG,"Some event triggered");
 #### More
 
 - Long click to a list item will copy the value to the clipboard.
-
-#### You might also like
-- [Hawk](https://github.com/orhanobut/hawk) Secure simple key-value storage
-- [Wasp](https://github.com/orhanobut/wasp) All-in-one network solution
-- [DialogPlus](https://github.com/orhanobut/dialogplus) Easy,simple dialog solution
-- [SimpleListView](https://github.com/orhanobut/simplelistview) Simple basic listview implementation with linearlayout
 
 #### License 
 <pre>
